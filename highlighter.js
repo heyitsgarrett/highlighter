@@ -1,5 +1,6 @@
 
-var content = document.getElementById('content');
+var content = document.getElementById('content'),
+    url = window.location.href;
 
 document.onmouseup = function(e){
     var selection;
@@ -25,13 +26,20 @@ function showHighlighterPopup(e,selection) {
 
     destroyPopups();
 
-    // Add popup
+    // Build url hash
+    var range = [selection.anchorOffset, selection.extentOffset];
+    range.sort();
+
+    var hash = '#hl-' + range[0] + '-' + range[1];
+
+    // Add, style popup
     var popup = document.createElement("a");
     popup.innerHTML = '#';
     popup.setAttribute('id','highlighter-pop');
+    popup.setAttribute('href', url + hash);
     popup.style.left = e.layerX - 25;
 
-    if (selection.baseOffset < selection.extentOffset) {
+    if (selection.anchorOffest < selection.extentOffset) {
         // Selected from top to bottom
         popup.setAttribute('class','point-up');
         popup.style.top = e.layerY + 30;
@@ -41,9 +49,6 @@ function showHighlighterPopup(e,selection) {
     }
 
     content.appendChild(popup);
-
-    console.log(e);
-    console.log(selection);
 }
 
 function clearSelection() {

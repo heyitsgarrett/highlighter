@@ -29,15 +29,15 @@ function showHighlighterPopup(e,selection) {
     var popup = document.createElement("a");
     popup.innerHTML = '#';
     popup.setAttribute('id','highlighter-pop');
-    popup.style.left = e.pageX - 25;
+    popup.style.left = e.layerX - 25;
 
     if (selection.baseOffset < selection.extentOffset) {
         // Selected from top to bottom
         popup.setAttribute('class','point-up');
-        popup.style.top = e.pageY;
+        popup.style.top = e.layerY + 30;
     } else {
         // Selected from bottom to top
-        popup.style.top = e.pageY - 120;
+        popup.style.top = e.layerY - 80;
     }
 
     content.appendChild(popup);

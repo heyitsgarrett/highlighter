@@ -39,7 +39,7 @@ function showHighlighterPopup(e,selection) {
     popup.setAttribute('href', url + hash);
     popup.style.left = e.layerX - 25;
 
-    if (selection.anchorOffest < selection.extentOffset) {
+    if (selection.baseOffset < selection.extentOffset) {
         // Selected from top to bottom
         popup.setAttribute('class','point-up');
         popup.style.top = e.layerY + 30;

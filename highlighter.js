@@ -2,7 +2,7 @@
 var content = document.getElementById('content'),
     url = window.location.href;
 
-document.onmouseup = function(e){
+content.onmouseup = function(e){
     var selection;
 
     if (window.getSelection()) {
@@ -11,7 +11,8 @@ document.onmouseup = function(e){
         selection = document.getSelection();
     }
 
-    if (selection.type === 'Caret') return destroyPopups();
+    if (selection.type !== 'Range') return destroyPopups();
+    if (e.srcElement.tagName === 'A') return;
 
     showHighlighterPopup(e,selection);
 
@@ -65,4 +66,20 @@ function destroyPopups() {
     if(popup)
         content.removeChild(popup);
     else return;
+}
+
+
+function getHashParams() {
+    // As seen in http://stackoverflow.com/a/4198132/1567196
+    var hashParams = {};
+    var e,
+        a = /\+/g,
+        r = /([^&;=]+)=?([^&;]*)/g,
+        d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+        q = window.location.hash.substring(1);
+
+    while (e = r.exec(q))
+       hashParams[d(e[1])] = d(e[2]);
+
+    return hashParams;
 }

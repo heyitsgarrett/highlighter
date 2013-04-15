@@ -1,6 +1,6 @@
 
 var content = document.getElementById('content'),
-    url = window.location.href;
+    url = location.protocol+'//'+location.host+location.pathname;
 
 content.onmouseup = function(e){
     var selection;
@@ -28,8 +28,9 @@ function showHighlighterPopup(e,selection) {
     destroyPopups();
 
     // Build url hash
+    console.log(range);
     var range = [selection.anchorOffset, selection.extentOffset];
-    range.sort();
+    range.sort(function(a,b){return a-b});
 
     var hash = '#hl-' + range[0] + '-' + range[1];
 

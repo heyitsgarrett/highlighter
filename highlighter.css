@@ -3,7 +3,7 @@ html, body {
     height:100%;
 }
 
-::selection {
+::selection, .highlight {
     background: #ffff75;
 }
 ::-moz-selection {
@@ -99,4 +99,3 @@ html, body {
         opacity: 1;
     }
 }​
-

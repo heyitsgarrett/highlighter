@@ -1,6 +1,24 @@
 
 var content = document.getElementById('content'),
-    url = location.protocol+'//'+location.host+location.pathname;
+    contentText = content.innerHTML.toString(),
+    url = location.protocol+'//'+location.host+location.pathname,
+    hashes = getHashParams();
+
+// console.log(contentText);
+
+// Init
+if(hashes['hl']) {
+    var hl = hashes['hl'].split('-'),
+        hlstr = contentText.substr(hl[0],hl[1]);
+
+    // Get range of highlight
+    var before = contentText.substr(0,hl[0]),
+        highlight = '<span class="highlight">' + hlstr + '</span>',
+        after = contentText.substr(before.length + hlstr.length);
+
+    // Replace that range with contents plus span with class
+    content.innerHTML = before + highlight + after;
+}
 
 content.onmouseup = function(e){
     var selection;
@@ -28,11 +46,9 @@ function showHighlighterPopup(e,selection) {
     destroyPopups();
 
     // Build url hash
-    console.log(range);
-    var range = [selection.anchorOffset, selection.extentOffset];
-    range.sort(function(a,b){return a-b});
+    var range = getSelectionRange();
 
-    var hash = '#hl-' + range[0] + '-' + range[1];
+    var hash = '#hl=' + range[0] + '-' + range[1];
 
     // Add, style popup
     var popup = document.createElement("a");
@@ -69,7 +85,6 @@ function destroyPopups() {
     else return;
 }
 
-
 function getHashParams() {
     // As seen in http://stackoverflow.com/a/4198132/1567196
     var hashParams = {};
@@ -83,4 +98,39 @@ function getHashParams() {
        hashParams[d(e[1])] = d(e[2]);
 
     return hashParams;
+}
+
+function getSelectionRange() {
+
+    var blockLength,
+        blockText,
+        start,
+        end;
+    if (typeof window.getSelection != "undefined") {
+        var sel = window.getSelection();
+        if (sel.rangeCount) {
+            var container = document.createElement("div");
+            for (var i = 0, len = sel.rangeCount; i < len; ++i) {
+                container.appendChild(sel.getRangeAt(i).cloneContents());
+            }
+            blockLength = container.innerHTML.length;
+            blockText = container.innerText;
+        }
+    } else if (typeof document.selection != "undefined") {
+        if (document.selection.type == "Text") {
+            blockLength = document.selection.createRange().innerHTML.length;
+            blockText = document.selection.createRange().innerText;
+        }
+    }
+
+    // Sanitize block text (in case of multiple paragraphs,blocks)
+    // We only need the start index, and hopefully enough text is selected to
+    // find it.
+    blockText = blockText.split('\n');
+
+    // Build range
+    start = contentText.indexOf(blockText[0]);
+    range = [start,blockLength];
+
+    return range;
 }
